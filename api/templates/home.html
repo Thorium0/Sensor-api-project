@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" integrity="sha256-+8RZJua0aEWg+QVVKg4LEzEEm/8RFez5Tb4JBNiV5xA=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+    <div>
+        <canvas id="T_chart"></canvas>
+        <canvas id="H_chart"></canvas>
+        <canvas id="P_chart"></canvas>
+    </div>
+    
+    
+    <script type="text/javascript">
+        var sensor_data = {{ sensor_data|tojson }};
+        var T_val = [];
+        var T_time = [];
+        var H_val = [];
+        var H_time = [];
+        var P_val = [];
+        var P_time = [];
+        for (var [key, data] of Object.entries(sensor_data)) {
+            for (var [index, tuple] of Object.entries(data)) {
+                switch(key) {
+                    case "T":
+                        T_val.push(tuple[0]);
+                        T_time.push(tuple[1]);
+                        break;
+                    case "H":
+                        H_val.push(tuple[0]);
+                        H_time.push(tuple[1]);
+                        break;
+                    case "P":
+                        P_val.push(tuple[0]);
+                        P_time.push(tuple[1]);
+                        break;
+                }
+            }
+        }
+
+        const T_data = {
+            labels: T_time,
+            datasets: [{
+                label: "Temperature",
+                data: T_val,
+                fill: false,
+                backgroundColor: 'rgb(0, 0, 0)',
+                borderColor: 'rgb(192, 192, 75)',
+                tension: 0.1
+            }]
+        };
+
+
+        const T_config = {
+            type: "line",
+            data: T_data,
+            options: {
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Celcius (°C)"
+                        }
+                    }
+                }
+            }
+        };
+
+        const T_chart = new Chart(
+            document.getElementById('T_chart'),
+            T_config
+        );
+
+        const H_data = {
+            labels: H_time,
+            datasets: [{
+                label: "Humidity",
+                data: H_val,
+                fill: false,
+                backgroundColor: 'rgb(0, 0, 0)',
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+        
+        const H_config = {
+            type: "line",
+            data: H_data,
+            options: {
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Percent (%)"
+                        }
+                    }
+                }
+            }
+        };
+
+        const H_chart = new Chart(
+            document.getElementById('H_chart'),
+            H_config
+        );
+
+        const P_data = {
+            labels: P_time,
+            datasets: [{
+                label: "Pressure",
+                data: P_val,
+                fill: false,
+                backgroundColor: 'rgb(0, 0, 0)',
+                borderColor: 'rgb(192, 75, 192)',
+                tension: 0.1
+            }]
+        };
+        
+        const P_config = {
+            type: "line",
+            data: P_data,
+            options: {
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Pascal (Pa)"
+                        }
+                    }
+                }
+            }
+        };
+
+        const P_chart = new Chart(
+            document.getElementById('P_chart'),
+            P_config
+        );
+    </script>
+</body>
+</html>
