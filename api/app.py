@@ -15,7 +15,7 @@ def home():
     from_time = to_time + timedelta(hours=-2)
 
     db.start_conn()
-    sensor_data = db.get_sensor_data_for_controller("rasp-client-1", from_time, to_time)
+    sensor_data = db.get_sensor_data_for_controller("school-client", from_time, to_time)
     db.stop_conn()
 
     context = {

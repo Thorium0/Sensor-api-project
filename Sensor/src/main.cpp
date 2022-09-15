@@ -15,7 +15,7 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(
 	NEO_GRB + NEO_KHZ800
 );
 
-String controller_codename = "rasp-client-1";
+String controller_codename = "school-client";
 String secret = "HdQJEaxDn0WBBFfhh7hoUiXyPw5ZyLbz5PGp9plbb4lIwPe7nQ";
 String url = "http://192.168.1.125:5000/api/v1/upload";
 
