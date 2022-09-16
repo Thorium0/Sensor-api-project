@@ -1,4 +1,5 @@
 # Sensor-api-project
+## Made by Troels Wittrup-Jensen
 
 This is a project I made for monitoring tempature, humidity and air pressure using an m5go as client, and uploading the data to a raspberry pi 4 hosting a server.
 
@@ -31,6 +32,3 @@ To setup the client just download the "Sensor" folder and using platformio for v
 * Only creates one connection the the database for each post request, and doesn't close it until the transaction is complete to ensure maximal performance.
 * Only proceeds with data recieves the POST-request contains a secret-key matched to one saved in the secrets table in the database.
 * Shows graphs of the sensors on "http://[server-ip]:5000" for the last two hours (can be configured in app.py).
-
-
-# Made by Troels Wittrup-Jensen
