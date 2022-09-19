@@ -10,7 +10,7 @@ api_url = "/api/v1/"
 
 # Show Graphs
 @app.route('/<controller>', methods=['GET'])
-def home(controller):
+def graph(controller):
     to_time = datetime.now()
     from_time = to_time + timedelta(hours=-2)
 
@@ -23,6 +23,11 @@ def home(controller):
         "sensor_data": sensor_data
     }
     return render("home.html", context)
+
+
+@app.route('/', methods=['GET'])
+def home():
+    return "Please provide a controller codename"
 
 # Revives POST-requests and inserts it into the database
 @app.route(api_url+'upload', methods=['POST', 'GET'])
