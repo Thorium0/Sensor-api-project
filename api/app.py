@@ -8,14 +8,14 @@ app = flask.Flask(__name__)
 
 api_url = "/api/v1/"
 
-
-@app.route('/', methods=['GET'])
-def home():
+# Show Graphs
+@app.route('/<controller>', methods=['GET'])
+def home(controller):
     to_time = datetime.now()
     from_time = to_time + timedelta(hours=-2)
 
     db.start_conn()
-    sensor_data = db.get_sensor_data_for_controller("school-client", from_time, to_time)
+    sensor_data = db.get_sensor_data_for_controller(controller, from_time, to_time)
     db.stop_conn()
 
     context = {
@@ -24,14 +24,7 @@ def home():
     }
     return render("home.html", context)
 
-
-
-@app.route(api_url+'test', methods=['GET'])
-def api_all():
-    db.upload_to_db("0.0.0.0", "T", 1.0)
-    return jsonify({"success":True})
-
-
+# Revives POST-requests and inserts it into the database
 @app.route(api_url+'upload', methods=['POST', 'GET'])
 def upload():
     if request.method == 'POST':
@@ -42,7 +35,7 @@ def upload():
 
             db.start_conn()
             secret = data["secret"]
-            if not db.check_secret(secret, "upload"):
+            if not db.check_secret(secret, "upload"): # Makes sure the secret-key is correct before proceeding
                 return jsonify({"success":False, "msg": "Secret is incorrect"})
             
 
