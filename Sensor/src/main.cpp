@@ -10,25 +10,25 @@
 
 SHT3X sht30;
 QMP6988 qmp6988;
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel( // Create object for the 3 LEDs
 	NUMPIXELS, LED_PIN,
 	NEO_GRB + NEO_KHZ800
 );
 
-String controller_codename = "school-client";
-String secret = "HdQJEaxDn0WBBFfhh7hoUiXyPw5ZyLbz5PGp9plbb4lIwPe7nQ";
-String url = "http://192.168.1.125:5000/api/v1/upload";
+String controller_codename = "school-client"; // The controllers codename
+String secret = "HdQJEaxDn0WBBFfhh7hoUiXyPw5ZyLbz5PGp9plbb4lIwPe7nQ"; // The secret-key to be used in the POST-request
+String url = "http://192.168.1.125:5000/api/v1/upload"; // The server url
 
-const char *ssid = "small-network";
-const char *password = "kagemand123";
+const char *ssid = "small-network"; // The network name
+const char *password = "kagemand123"; // The network password
 
 float tmp = 0.0;
 float hum = 0.0;
 float pressure = 0.0;
 
-unsigned long postDelay = 1000 * 60 * 5 ;
-unsigned long sensorDelay = 1000;
-int delayCounter = postDelay - 1000;
+unsigned long postDelay = 1000 * 60 * 5 ; // Post every 5 minutes
+unsigned long sensorDelay = 1000; // Get sensor data every second
+int delayCounter = postDelay - 1000; // POST-countdown offset
 
 AsyncTimer startupTimeout;
 AsyncTimer postLoop;
@@ -37,8 +37,8 @@ AsyncTimer sensorLoop;
 const int buttonPin = 38; 
 int buttonState = 0;
 
-
-void postSensorData() {
+// POST the sensor data to the server
+void postSensorData() { 
 	delayCounter = postDelay - 1000;
 	if (WiFi.isConnected()) {
 			HTTPClient http;
@@ -63,6 +63,7 @@ void postSensorData() {
 		}
 }
 
+// Get data from sensors and display it on the display
 void getSensorData() {
 	pressure = qmp6988.calcPressure();
 	if (sht30.get() == 0) {
@@ -87,11 +88,13 @@ void getSensorData() {
 	delayCounter -= 1000;
 }
 
+// Get and POST data on startup to check if we recieve status code 200
 void startup() {
 	getSensorData();
 	postSensorData();
 }
 
+// Initialize devices and start async loops
 void setup() {
 	M5.begin();
 	M5.Power.begin();
@@ -109,6 +112,7 @@ void setup() {
 	postLoop.setInterval(postSensorData, postDelay);
 }
 
+// Handle loops and button
 void loop() {
 	startupTimeout.handle();
 	sensorLoop.handle();
