@@ -1,12 +1,13 @@
 from mariadb import connect, Error
 
-
+# Credentials for the database
 host="localhost"
 user="root"
 password="0786459123"
 database="sensor_data"
 db = None
 
+# Create connection to the database
 def start_conn():
     global db
     try:
@@ -14,14 +15,17 @@ def start_conn():
     except Error as ex:
         print(f"An error occurred while connecting to MariaDB: {ex}")
 
+# Close connection to the database
 def stop_conn():
     global db
     db.close()
 
+    
+# gets the selector from the connection
 def get_conn():
     return db.cursor()
 
-
+# Compares give secret-key to the one in the database
 def check_secret(secret, keyname):
     conn = get_conn()
     sql = "SELECT secret FROM secrets WHERE keyname = ?"
@@ -32,6 +36,7 @@ def check_secret(secret, keyname):
     return secret==data
 
 
+# Gets sensor_id based on controller, and sensor-type
 def get_sensor_id(controller_codename, sensor_type):
     conn = get_conn()
     
@@ -47,7 +52,7 @@ def get_sensor_id(controller_codename, sensor_type):
         return data[0]
 
 
-
+# Gets data from sensor within given timeframe
 def get_sensor_data(sensor_id, from_time, to_time):
     conn = get_conn()
     sql = "SELECT value, datetime FROM logs WHERE sensor_id=? AND datetime>? AND datetime<?"
@@ -60,6 +65,7 @@ def get_sensor_data(sensor_id, from_time, to_time):
     return data
 
 
+# High-level function to quickly pull out all data for a specific controller
 def get_sensor_data_for_controller(controller_codename, from_time, to_time):
     types = ["T", "H", "P"]
     sensor_data = {"T": [], "H": [], "P": []}
@@ -70,7 +76,7 @@ def get_sensor_data_for_controller(controller_codename, from_time, to_time):
     
     
     
-
+# Inserts sensor-data into the database
 def upload_to_db(controller_codename, sensor_type, value):
     sensor_id = get_sensor_id(controller_codename, sensor_type)
     conn = get_conn()
