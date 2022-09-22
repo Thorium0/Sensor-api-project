@@ -3,7 +3,7 @@ from mariadb import connect, Error
 # Credentials for the database
 host="localhost"
 user="root"
-password="0786459123"
+password="enter-code-here"
 database="sensor_data"
 db = None
 
